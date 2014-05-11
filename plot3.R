@@ -1,0 +1,26 @@
+data<-read.table("household_power_consumption.txt", header=T, sep=";")
+datetime<-as.character(data$Date)
+datetime<-strptime(datetime, format=("%d/%m/%Y"))
+datetime<-as.Date(datetime, format=("%Y/%m/%d"))
+data$Date=datetime
+get.rows<-data$Date >= as.Date("2007/02/01", format="%Y/%m/%d") & data$Date <= as.Date("2007/02/02", format="%Y/%m/%d")
+data<-data[get.rows, ]
+date<-as.character(data$Date)
+time<-as.character(data$Time)
+datetime=paste(date,time,sep=" ")
+datetime<-strptime(datetime, format=("%Y-%m-%d %H:%M:%S"))
+data$Time=datetime
+data$Sub_metering_1<-as.numeric(as.character(data$Sub_metering_1))
+data$Sub_metering_2<-as.numeric(as.character(data$Sub_metering_2))
+data$Sub_metering_3<-as.numeric(as.character(data$Sub_metering_3))
+
+png(filename="plot3.png", width = 480, height = 480)
+plot(data$Time,data$Sub_metering_1,type="l", main="", xlab="", ylab="Energy sub metering",ylim=c(0,40))
+par(new=TRUE)
+plot(data$Time,data$Sub_metering_2,type="l", main="", xlab="", ylab="",ylim=c(0,40),col="red")
+par(new=TRUE)
+plot(data$Time,data$Sub_metering_3,type="l", main="", xlab="", ylab="",ylim=c(0,40),col="blue")
+par(new=TRUE)
+labels<-c("Sub_metering_1", "Sub_metering_2", "Sub_metering_3")
+legend("topright",labels,lwd=2,col=c("black","red","blue"))
+dev.off()
